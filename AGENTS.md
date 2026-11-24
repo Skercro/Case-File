@@ -9,7 +9,7 @@ verified_against_record: false
 
 # Agent operating constitution
 
-All agents must read [.github/copilot-instructions.md](.github/copilot-instructions.md) before executing tasks. Follow applicable professional duties, confidentiality rules, repository access controls, and human counsel instructions. Escalate uncertainty; never invent jurisdiction-specific rules or deadlines.
+All agents must read [.github/copilot-instructions.md](.github/copilot-instructions.md) before executing tasks. Follow applicable professional duties, confidentiality rules, repository access controls, and human counsel instructions. Escalate uncertainty; never invent jurisdiction-specific rules or deadlines. For initial workspace configuration, use the [case-setup agent](.github/agents/case-setup.agent.md) and follow [SETUP-AGENT.md](SETUP-AGENT.md); do not improvise a separate setup process.
 
 ## 0. Case identity, jurisdiction, and setup
 

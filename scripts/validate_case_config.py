@@ -40,7 +40,7 @@ def main():
     if data.get("schema_version") != "1.0":
         errors.append("schema_version must be '1.0'")
     status = data.get("configuration_status")
-    if status not in ALLOWED_STATUS:
+    if not isinstance(status, str) or status not in ALLOWED_STATUS:
         errors.append("configuration_status must be unconfigured, in_progress, or verified")
     case = mapping(data, "case", "case")
     if case.get("matter_type") != "civil":
@@ -75,6 +75,8 @@ def main():
     verification = mapping(data, "verification", "verification")
     if not isinstance(verification.get("unresolved_items"), list):
         errors.append("verification.unresolved_items must be a list")
+    if verification.get("status") not in {"not_reviewed", "in_review", "verified"}:
+        errors.append("verification.status must be not_reviewed, in_review, or verified")
     if status == "verified":
         required = {
             "case.title": case.get("title"),

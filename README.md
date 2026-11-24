@@ -16,29 +16,29 @@ The framework does not determine legal deadlines, privilege, admissibility, or g
 ## Start here
 
 1. Read this guide before putting any matter information into the repository.
-2. Follow [CASE-SETUP.md](CASE-SETUP.md) to create a **separate private repository for one matter**, configure it, and check the setup.
-3. Use [INDEX.md](INDEX.md) as the case-file dashboard. It links to each record area and the task queue.
+2. Clone this framework into a local workspace and open it in an AI-enabled coding environment that can read/edit files and run local commands.
+3. Start the **case-setup** agent (see [SETUP-AGENT.md](SETUP-AGENT.md) or [.github/agents/case-setup.agent.md](.github/agents/case-setup.agent.md)). It will guide you through setup as a conversational intake, install dependencies, configure the setup files, and run validation.
+4. Use [INDEX.md](INDEX.md) as the case-file dashboard after setup.
+
+The setup agent is optional. If you prefer to work manually, follow [CASE-SETUP.md](CASE-SETUP.md).
 
 ## Quick start
 
-**Prerequisites:** Git, Python 3, and Git LFS if you plan to add binary files covered by `.gitattributes`.
+**Prerequisites:** Git, Python 3, an AI-enabled coding agent with local file/terminal access, and a separate empty private repository for the matter. Git LFS is needed before adding binary files covered by `.gitattributes`.
 
-1. Create a new, empty **private** GitHub repository for your matter. Do not put case information in this public framework or a public fork. Before adding records, verify repository visibility, who can access it, backup and retention arrangements, and whether your organization's or professional obligations permit using GitHub and any AI tools with the case data. A private repository does not itself establish privilege, confidentiality, or policy compliance.
-2. Clone the framework, then point `origin` at your new private repository. Replace the example URL with your repository's URL; check `git remote -v` before pushing.
+1. Create a new, empty **private** repository for your matter. Do not put case information in this public framework or a public fork. Before sharing matter information with an AI tool, verify that your repository, AI service, connected tools, access controls, retention, and backup arrangements are approved for the matter. A private repository alone does not establish privilege, confidentiality, or policy compliance.
+2. Clone this framework and open the local clone in your AI-enabled coding environment:
 
    ```sh
    git clone https://github.com/Skercro/Case-File.git My-Case-File
    cd My-Case-File
-   git remote rename origin framework
-   git remote add origin https://github.com/YOUR-ACCOUNT/YOUR-PRIVATE-REPO.git
-   git remote -v
-   git push -u origin main
    ```
 
-   Create the destination repository empty (without a README or license) so its history does not conflict with the clone. The `framework` remote keeps the public source address; push matter-specific work only to your private `origin`.
-3. Work through [CASE-SETUP.md](CASE-SETUP.md) and complete [case-config.yaml](case-config.yaml). Keep unknown values unknown; do not mark the configuration verified until a human has reviewed it.
-4. Install Git LFS and enable it with `git lfs install` before adding supported binary records. Set up Python dependencies and run the configuration validator and repository audit as described in the setup guide.
-5. After confirming the private workspace and its access controls, place new incoming material in [00-inbox/](00-inbox/README.md). Follow the evidence and indexing rules before promoting originals to the evidence archive.
+3. Run the case-setup agent. It will ask for the private repository URL, verify the workspace and privacy prerequisites, collect matter details in manageable sections, and ask you to confirm the summary before writing setup files. It will run `scripts/bootstrap_setup.sh` to create `.venv`, install `requirements-dev.txt`, and verify PyYAML **before** running project Python utilities.
+4. The agent will configure `case-config.yaml`, prepare approved setup records, run the validator, repository audit, and tests, and report unresolved human-review items. It must not mark legal or jurisdictional details verified by itself.
+5. Review the final remote configuration and explicitly approve any push. Matter-specific work belongs only in the separate private repository. Never push matter data to the public `framework` remote.
+
+If the agent is unavailable, follow [CASE-SETUP.md](CASE-SETUP.md) for manual setup. Create the private destination empty (without a README or license) so the clone's history can be pushed without conflict. The public source remote should be named `framework`; the private matter remote should be named `origin`.
 
 ## How the file is organized
 
@@ -54,4 +54,4 @@ The framework does not determine legal deadlines, privilege, admissibility, or g
 
 Checksums establish file-content consistency, not provenance or authenticity. Never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`; choose a final filename before placing an original there. Run `python3 scripts/hash_raw.py` after adding raw evidence, preserve prior checksum entries, and update the applicable index and audit log. See [AGENTS.md](AGENTS.md) for the complete integrity and citation rules.
 
-The framework currently supports civil litigation only. The validator checks configuration structure, not the truth of case details, legal jurisdiction, applicable law, service, deadlines, or court procedure. A human must verify those matters. See [CASE-SETUP.md](CASE-SETUP.md) for limitations, validation commands, and the complete setup sequence.
+The framework currently supports civil litigation only. The validator checks configuration structure, not the truth of case details, legal jurisdiction, applicable law, service, deadlines, or court procedure. A human must verify those matters. See [SETUP-AGENT.md](SETUP-AGENT.md) for the agent workflow and [CASE-SETUP.md](CASE-SETUP.md) for manual setup.
