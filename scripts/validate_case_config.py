@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Validate the structured civil case configuration; this is not legal verification."""
+from datetime import date
 from pathlib import Path
+import re
 import sys
 
 try:
@@ -13,13 +15,36 @@ ROOT = Path(__file__).resolve().parent.parent
 PATH = ROOT / "case-config.yaml"
 ALLOWED_STATUS = {"unconfigured", "in_progress", "verified"}
 
+
+class UniqueKeyLoader(yaml.SafeLoader):
+    def construct_mapping(self, node, deep=False):
+        self.flatten_mapping(node)
+        seen = set()
+        for key_node, _ in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            try:
+                duplicate = key in seen
+                seen.add(key)
+            except TypeError as exc:
+                raise yaml.constructor.ConstructorError(
+                    "while constructing a mapping", node.start_mark,
+                    "unhashable mapping key", key_node.start_mark,
+                ) from exc
+            if duplicate:
+                raise yaml.constructor.ConstructorError(
+                    "while constructing a mapping", node.start_mark,
+                    f"duplicate key: {key!r}", key_node.start_mark,
+                )
+        return super().construct_mapping(node, deep=deep)
+
+
 def main():
     if PATH.is_symlink() or not PATH.is_file():
         print("ERROR: case-config.yaml is missing or is not a regular file", file=sys.stderr)
         return 1
     try:
-        data = yaml.safe_load(PATH.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, yaml.YAMLError) as exc:
+        data = yaml.load(PATH.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
+    except (OSError, UnicodeError, ValueError, yaml.YAMLError) as exc:
         print(f"ERROR: invalid case-config.yaml: {exc}", file=sys.stderr)
         return 1
     errors = []
@@ -70,12 +95,20 @@ def main():
         if not isinstance(proceedings.get(key), list):
             errors.append(f"proceedings.{key} must be a list")
     controls = mapping(data, "operating_controls", "operating_controls")
-    if not isinstance(controls.get("human_review_required"), bool):
-        errors.append("operating_controls.human_review_required must be a boolean")
+    for key in ("privilege_review_required", "human_review_required",
+                "filing_approval_required", "deadline_calculation_requires_human_verification"):
+        value = controls.get(key)
+        if not isinstance(value, bool):
+            errors.append(f"operating_controls.{key} must be a boolean")
+        elif not value:
+            print(f"WARNING: operating_controls.{key} is disabled; confirm that this is authorized for the matter.", file=sys.stderr)
+    for key in ("permitted_ai_data_sources", "prohibited_ai_actions"):
+        string_list(controls, key, f"operating_controls.{key}")
     verification = mapping(data, "verification", "verification")
     if not isinstance(verification.get("unresolved_items"), list):
         errors.append("verification.unresolved_items must be a list")
-    if verification.get("status") not in {"not_reviewed", "in_review", "verified"}:
+    review_status = verification.get("status")
+    if not isinstance(review_status, str) or review_status not in {"not_reviewed", "in_review", "verified"}:
         errors.append("verification.status must be not_reviewed, in_review, or verified")
     if status == "verified":
         required = {
@@ -86,11 +119,20 @@ def main():
             "jurisdiction.county_or_district": jurisdiction.get("county_or_district"),
             "jurisdiction.court.name": court.get("name"),
             "verification.reviewed_by": verification.get("reviewed_by"),
-            "verification.last_reviewed": verification.get("last_reviewed"),
         }
         for label, value in required.items():
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"{label} is required when configuration_status is verified")
+        reviewed = verification.get("last_reviewed")
+        if isinstance(reviewed, str):
+            try:
+                if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", reviewed):
+                    raise ValueError("not an ISO calendar date")
+                date.fromisoformat(reviewed)
+            except ValueError:
+                errors.append("verification.last_reviewed must be a valid ISO date when configuration_status is verified")
+        elif not isinstance(reviewed, date):
+            errors.append("verification.last_reviewed must be a valid ISO date when configuration_status is verified")
         if verification.get("status") != "verified":
             errors.append("verification.status must be 'verified' when configuration_status is verified")
         if verification.get("unresolved_items"):

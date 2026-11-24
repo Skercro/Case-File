@@ -25,7 +25,7 @@ The framework supports civil litigation only. It assumes no particular state, co
 
 ## Before you begin
 
-Have Git, Python 3, and access to a GitHub account or another approved private Git host. Git LFS is needed before adding binary file types covered by `.gitattributes`. Before sharing matter information with an AI tool or copying case material, confirm that the host, AI service, connected tools, access controls, retention, and backup settings are permitted for the matter. A private repository alone does not ensure confidentiality, privilege, or compliance with professional or organizational obligations.
+Have Git, Python 3.9 or newer, and access to a GitHub account or another approved private Git host. Git LFS is needed before adding binary file types covered by `.gitattributes`. Before sharing matter information with an AI tool or copying case material, confirm that the host, AI service, connected tools, access controls, retention, and backup settings are permitted for the matter. A private repository alone does not ensure confidentiality, privilege, or compliance with professional or organizational obligations.
 
 ## Manual setup sequence
 
@@ -47,20 +47,21 @@ git lfs install
 git lfs pull
 ```
 
-Then update the remotes. Replace the URL with the private repository URL, inspect the output, and do not push until you have confirmed that `origin` points to the private destination:
+Then update the remotes. Replace the URL with the private repository URL and inspect the output:
 
 ```sh
 git remote rename origin framework
 git remote add origin https://github.com/YOUR-ACCOUNT/YOUR-PRIVATE-REPO.git
 git remote -v
-git push -u origin main
 ```
 
 The `framework` remote is the public source; `origin` is the private matter repository. Never push matter-specific work to `framework`. If using another Git host, follow its equivalent process and confirm the destination is private.
 
 ### 2. Confirm privacy and access before adding case records
 
-Set repository visibility to private and grant access only to approved people. Review connected apps, AI-processing terms, retention, and independent backups against applicable client, court, organizational, and professional requirements. Do not commit passwords, access tokens, financial account details, or other secrets. If these conditions cannot be verified, stop before adding case material and use an approved alternative.
+Verify that the exact `origin` destination is private and grant access only to approved people. Review connected apps, AI-processing terms, retention, and independent backups against applicable client, court, organizational, and professional requirements. Do not commit passwords, access tokens, financial account details, or other secrets. If these conditions cannot be verified, stop before adding case material and use an approved alternative.
+
+Follow the [pre-push checklist](OPERATIONS.md#before-every-push) before the initial push, then push the clean framework to the verified private destination with `git push -u origin main`. Configure the [branch protection and backup controls](OPERATIONS.md) before adding matter information. Agents must obtain explicit approval before any push.
 
 ### 3. Prepare the local tools
 
@@ -107,7 +108,7 @@ From the repository root, run:
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-On Windows, use `.venv/Scripts/python.exe` instead. The configuration validator checks YAML syntax, required structure, supported civil matter type, and fields required for a configuration marked verified. The repository audit checks selected metadata, folder indexes, and raw-evidence checksums. Tests check the repository utilities. None of these commands verifies the truth of case details, legal conclusions, court rules, deadlines, service, or authenticity. Resolve reported failures; do not bypass them or mark legal information verified merely because a script passes.
+On Windows, use `.venv/Scripts/python.exe` instead. The configuration validator checks YAML syntax, required structure, supported civil matter type, and fields required for a configuration marked verified; it warns if a protective operating control is disabled. The repository audit checks selected metadata, folder indexes, and raw-evidence checksums. The CI change audit checks index and audit-log synchronization and append-only history against the Git base. None of these commands verifies the truth of case details, legal conclusions, court rules, deadlines, service, or authenticity. Resolve reported failures and review warnings; do not bypass them or mark legal information verified merely because a script passes.
 
 ### 6. Begin intake and preserve the record
 

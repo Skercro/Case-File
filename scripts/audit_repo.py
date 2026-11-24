@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import sys
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 NUMBERED = (
@@ -192,6 +193,69 @@ def digest_file(path):
     return digest.hexdigest()
 
 
+def audit_index(directory, ids, errors):
+    index = directory / "_index.md"
+    label = index.relative_to(ROOT).as_posix()
+    try:
+        text = index.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"{label}: cannot read index: {exc}")
+        return
+    text = re.sub(
+        r"<!--.*?-->", lambda match: "\n" * match.group().count("\n"),
+        text, flags=re.DOTALL,
+    )
+    indexed = set()
+    for number, line in enumerate(text.splitlines(), 1):
+        if not line.strip().startswith("|"):
+            continue
+        columns = [column.strip() for column in line.strip().strip("|").split("|")]
+        if len(columns) < 2:
+            errors.append(f"{label}:{number}: index row needs a record ID and file link")
+            continue
+        record_id, link = columns[:2]
+        if record_id == "Record ID" and link == "File":
+            continue
+        if all(re.fullmatch(r":?-{3,}:?", column) for column in columns):
+            continue
+        if not record_id:
+            errors.append(f"{label}:{number}: record ID must not be empty")
+        elif record_id.casefold() in ids:
+            errors.append(f"{label}:{number}: duplicate record ID {record_id!r} (also in {ids[record_id.casefold()]})")
+        else:
+            ids[record_id.casefold()] = f"{label}:{number}"
+        match = re.fullmatch(r"\[([^\]]+)\]\(([^)]+)\)", link)
+        if not match:
+            errors.append(f"{label}:{number}: file must be a Markdown relative link")
+            continue
+        link_label, target = match.groups()
+        try:
+            parsed = urlsplit(target)
+        except ValueError:
+            errors.append(f"{label}:{number}: invalid file link: {target}")
+            continue
+        relative = unquote(parsed.path)
+        if (parsed.scheme or parsed.netloc or parsed.query or parsed.fragment
+                or not relative or relative.startswith("/") or "\\" in relative
+                or any(ord(char) < 32 or ord(char) == 127 for char in relative)):
+            errors.append(f"{label}:{number}: file link must be a relative path without query or fragment")
+            continue
+        path = (directory / relative).resolve()
+        if not path.is_relative_to(directory.resolve()) or not path.is_file():
+            errors.append(f"{label}:{number}: file link is missing or outside its folder: {target}")
+            continue
+        if link_label != path.name:
+            errors.append(f"{label}:{number}: link text must be the exact filename: {path.name}")
+        if path in indexed:
+            errors.append(f"{label}:{number}: file indexed more than once: {target}")
+        indexed.add(path)
+    for path in files_below(directory):
+        if path.is_symlink():
+            errors.append(f"{path.relative_to(ROOT)}: symlinks are not allowed")
+        elif path.name != ".gitkeep" and path.resolve() not in indexed:
+            errors.append(f"{path.relative_to(ROOT)}: file missing from {label}")
+
+
 def main():
     errors = []
     for relative in FRONTMATTER_DIRS:
@@ -205,25 +269,13 @@ def main():
             elif path.suffix.lower() == ".md":
                 audit_frontmatter(path, errors)
 
+    ids = {}
     for relative in NUMBERED:
         directory = ROOT / relative
-        index = directory / "_index.md"
         if not directory.is_dir() or directory.is_symlink():
             errors.append(f"{relative}: required real directory is missing")
             continue
-        try:
-            text = index.read_text(encoding="utf-8")
-        except (OSError, UnicodeError) as exc:
-            errors.append(f"{relative}/_index.md: cannot read index: {exc}")
-            continue
-        for path in files_below(directory):
-            if path.is_symlink():
-                errors.append(f"{path.relative_to(ROOT)}: symlinks are not allowed")
-            elif path.name != ".gitkeep":
-                # Require the entire filename, not a substring of a different name.
-                pattern = r"(?<![\w.-])" + re.escape(path.name) + r"(?![\w.-])"
-                if not re.search(pattern, text):
-                    errors.append(f"{path.relative_to(ROOT)}: filename missing from {relative}/_index.md")
+        audit_index(directory, ids, errors)
 
     raw = ROOT / "03-evidence-and-exhibits/raw"
     manifest = ROOT / "03-evidence-and-exhibits/checksums.sha256"
