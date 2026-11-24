@@ -44,7 +44,13 @@ Set repository visibility to private and grant access only to approved people. R
 
 ### 3. Prepare the local tools
 
-Install and enable Git LFS before adding binary files tracked by `.gitattributes`. The configured extensions are lowercase; use lowercase extensions when naming those records. LFS storage and bandwidth may incur costs. Existing tracked files need a separately reviewed migration. If the clone contains LFS-managed files that are not available locally, run `git lfs pull`.
+Install Git LFS, then enable it from the repository root before adding binary files tracked by `.gitattributes`:
+
+```sh
+git lfs install
+```
+
+The configured extensions are lowercase; use lowercase extensions when naming those records. LFS storage and bandwidth may incur costs. Existing tracked files need a separately reviewed migration. If the clone contains LFS-managed files that are not available locally, run `git lfs pull`.
 
 Install the Python development dependency (PyYAML) from the repository root:
 
