@@ -1,0 +1,40 @@
+name: Audit case record
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          lfs: true
+      - name: Enforce raw evidence immutability
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BASE_SHA" =~ ^0+$ ]]; then
+            BASE_SHA="$(git hash-object -t tree /dev/null)"
+          elif ! git cat-file -e "${BASE_SHA}^{commit}"; then
+            git fetch --no-tags origin "$BASE_SHA"
+          fi
+          if ! git diff --quiet --no-renames --diff-filter=DMRT "$BASE_SHA" "$HEAD_SHA" -- 03-evidence-and-exhibits/raw/; then
+            echo "::error::Existing raw evidence was modified, renamed, deleted, or changed type."
+            git diff --no-renames --name-status --diff-filter=DMRT "$BASE_SHA" "$HEAD_SHA" -- 03-evidence-and-exhibits/raw/
+            exit 1
+          fi
+      - name: Audit indexes, metadata, and checksums
+        run: python3 scripts/audit_repo.py
+      - name: Test audit utilities
+        run: python3 -m unittest discover -s tests -v

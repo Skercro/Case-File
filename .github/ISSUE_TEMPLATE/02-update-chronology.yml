@@ -1,0 +1,30 @@
+name: "Task: Extract Facts & Reconcile Timeline"
+description: Request source-cited timeline and witness updates.
+title: "Chronology: "
+body:
+  - type: markdown
+    attributes:
+      value: "Avoid privileged details in this issue; identify restricted source records by ID."
+  - type: textarea
+    id: sources
+    attributes:
+      label: Indexed record IDs and scope
+      description: Identify records, transcripts, witnesses, or issues to review.
+    validations:
+      required: true
+  - type: textarea
+    id: concerns
+    attributes:
+      label: Known conflicts or limitations
+      description: Identify known gaps without asserting unverified facts.
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      options:
+        - label: "Cite events and distinguish verified facts, allegations, and unverified dates."
+          required: true
+        - label: "Update relevant timeline, contradictions, witness profiles, index, and audit log."
+          required: true
+        - label: "Run the repository audit and report unresolved issues."
+          required: true

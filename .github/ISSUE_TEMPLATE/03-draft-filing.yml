@@ -1,0 +1,37 @@
+name: "Task: Draft Motion, Pleading, or Legal Memo"
+description: Request a source-supported draft for counsel review.
+title: "Draft: "
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include secrets or privileged substance in this issue. Human counsel must review and approve any filing."
+  - type: input
+    id: document
+    attributes:
+      label: Document type and requested relief
+      placeholder: "Motion, pleading, notice, proposed order, or legal memo"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Jurisdiction, scope, and indexed sources
+      description: Identify the jurisdiction if known and provide the relevant record IDs; flag unknowns.
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: Human-verified deadline and time zone
+      description: Include the source or say that verification is pending.
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      options:
+        - label: "Use the appropriate template and cite verified facts to precise record locations."
+          required: true
+        - label: "Verify authorities or flag them for counsel; do not invent facts or citations."
+          required: true
+        - label: "Update the folder index and audit log, run the audit, and request human review."
+          required: true

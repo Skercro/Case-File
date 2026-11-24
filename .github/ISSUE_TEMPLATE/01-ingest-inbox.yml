@@ -1,0 +1,31 @@
+name: "Task: Ingest & Index Documents in 00-inbox/"
+description: Request intake, preservation, indexing, and chronology handoff.
+title: "Intake: "
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include secrets or privileged case details in the issue. Confirm repository and AI access are authorized."
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inbox inputs and source
+      description: Identify authorized inbox paths and provenance using only information suitable for this issue.
+      placeholder: "00-inbox/example; source and custody details recorded in the restricted case file"
+    validations:
+      required: true
+  - type: textarea
+    id: instructions
+    attributes:
+      label: Routing and known limitations
+      description: Note document types, OCR availability, and any restrictions or uncertainties.
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      options:
+        - label: "Preserve raw originals; hash new files without replacing existing entries."
+          required: true
+        - label: "Update indexes, audit log, and TODO handoff; flag missing OCR."
+          required: true
+        - label: "Run the repository audit and report unresolved issues."
+          required: true
