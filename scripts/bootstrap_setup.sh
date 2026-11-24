@@ -52,7 +52,7 @@ if command -v git-lfs >/dev/null 2>&1; then
   git lfs install
   git lfs pull
 else
-  tracked_lfs_files="$(git ls-files | grep -Ei '\\.(pdf|docx?|xlsx?|mp4|mp3|wav|m4a|jpe?g|png|tiff?|zip|eml|msg)$' || true)"
+  tracked_lfs_files="$(git ls-files | grep -Ei '\.(pdf|docx?|xlsx?|mp4|mp3|wav|m4a|jpe?g|png|tiff?|zip|eml|msg)$' || true)"
   if [[ -n "$tracked_lfs_files" ]]; then
     echo "ERROR: this clone tracks Git LFS file types, but Git LFS is not installed." >&2
     echo "Install Git LFS, then rerun this script before pushing or hashing files." >&2
