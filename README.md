@@ -37,7 +37,7 @@ The framework does not determine legal deadlines, privilege, admissibility, or g
 
    Create the destination repository empty (without a README or license) so its history does not conflict with the clone. The `framework` remote keeps the public source address; push matter-specific work only to your private `origin`.
 3. Work through [CASE-SETUP.md](CASE-SETUP.md) and complete [case-config.yaml](case-config.yaml). Keep unknown values unknown; do not mark the configuration verified until a human has reviewed it.
-4. Install Git LFS before adding supported binary records. Set up Python dependencies and run the configuration validator and repository audit as described in the setup guide.
+4. Install Git LFS and enable it with `git lfs install` before adding supported binary records. Set up Python dependencies and run the configuration validator and repository audit as described in the setup guide.
 5. After confirming the private workspace and its access controls, place new incoming material in [00-inbox/](00-inbox/README.md). Follow the evidence and indexing rules before promoting originals to the evidence archive.
 
 ## How the file is organized
