@@ -47,8 +47,20 @@ echo "Installing declared setup dependencies..."
 echo "Verifying PyYAML is available in the project environment..."
 "$VENV_PYTHON" -c 'import yaml; print("PyYAML", yaml.__version__, "ready")'
 
+if command -v git-lfs >/dev/null 2>&1; then
+  echo "Enabling Git LFS and fetching any objects tracked by this clone..."
+  git lfs install
+  git lfs pull
+else
+  tracked_lfs_files="$(git ls-files | grep -Ei '\\.(pdf|docx?|xlsx?|mp4|mp3|wav|m4a|jpe?g|png|tiff?|zip|eml|msg)$' || true)"
+  if [[ -n "$tracked_lfs_files" ]]; then
+    echo "ERROR: this clone tracks Git LFS file types, but Git LFS is not installed." >&2
+    echo "Install Git LFS, then rerun this script before pushing or hashing files." >&2
+    exit 1
+  fi
+  echo "NOTICE: Git LFS is not installed. Install it before adding any binary files covered by .gitattributes."
+fi
+
 echo
 echo "Setup environment ready."
 echo "Use $VENV_PYTHON for all project Python commands."
-echo "Next: complete case-config.yaml with the setup agent, then run the validator and audit."
-echo "Git LFS status: $(command -v git-lfs >/dev/null 2>&1 && git lfs version || echo 'not installed; install before adding LFS-managed binary records')"
