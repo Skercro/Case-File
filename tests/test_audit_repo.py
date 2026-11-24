@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from urllib.parse import quote
 
 
 SOURCE = Path(__file__).resolve().parent.parent
@@ -39,7 +40,8 @@ class AuditTests(unittest.TestCase):
             path = self.root / folder
             path.mkdir()
             (path / "_index.md").write_text(
-                FRONTMATTER + "\n| [_index.md](_index.md) |\n", encoding="utf-8"
+                FRONTMATTER + f"\n| Record ID | File |\n| --- | --- |\n"
+                f"| Index-{folder} | [_index.md](_index.md) |\n", encoding="utf-8"
             )
         (self.root / "00-admin-and-strategy").mkdir()
         (self.root / "01-pleadings-and-motions/drafts").mkdir()
@@ -49,9 +51,11 @@ class AuditTests(unittest.TestCase):
         )
         self.index("03-evidence-and-exhibits", "checksums.sha256")
 
-    def index(self, folder, name):
+    def index(self, folder, name, record_id=None):
+        index = self.root / folder / "_index.md"
+        record_id = record_id or f"{folder}-{len(index.read_text().splitlines())}"
         with (self.root / folder / "_index.md").open("a", encoding="utf-8") as stream:
-            stream.write(f"\n| {name} |\n")
+            stream.write(f"| {record_id} | [{Path(name).name}]({quote(name)}) |\n")
 
     def run_script(self, name):
         return subprocess.run(
@@ -64,7 +68,7 @@ class AuditTests(unittest.TestCase):
     def test_baseline_and_required_frontmatter_validation(self):
         doc = self.root / "01-pleadings-and-motions/drafts/DRAFT_record.md"
         doc.write_text(FRONTMATTER, encoding="utf-8")
-        self.index("01-pleadings-and-motions", doc.name)
+        self.index("01-pleadings-and-motions", "drafts/" + doc.name)
         self.assertEqual(self.run_script("audit_repo.py").returncode, 0)
         for old, new in (
             ("status: draft", "status: invalid"),
@@ -85,19 +89,58 @@ class AuditTests(unittest.TestCase):
         doc = self.root / "02-discovery/nested/record.txt"
         doc.parent.mkdir()
         doc.write_text("test", encoding="utf-8")
-        self.index("02-discovery", "other-record.txt")
+        with (self.root / "02-discovery/_index.md").open("a") as stream:
+            stream.write("<!-- record.txt not indexed yet -->\n")
         result = self.run_script("audit_repo.py")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("filename missing", result.stderr)
-        self.index("02-discovery", doc.name)
+        self.assertIn("file missing", result.stderr)
+        self.index("02-discovery", "nested/" + doc.name)
         self.assertEqual(self.run_script("audit_repo.py").returncode, 0)
+
+    def test_index_rejects_broken_links_duplicate_ids_and_duplicate_basenames(self):
+        first = self.root / "02-discovery/a/record.txt"
+        second = self.root / "02-discovery/b/record.txt"
+        for path in (first, second):
+            path.parent.mkdir()
+            path.write_text("test", encoding="utf-8")
+        self.index("02-discovery", "a/record.txt", "Shared-ID")
+        self.index("02-discovery", "missing/record.txt", "shared-id")
+        result = self.run_script("audit_repo.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("duplicate record ID", result.stderr)
+        self.assertIn("file link is missing", result.stderr)
+        self.assertIn("b/record.txt: file missing", result.stderr)
+
+    def test_index_rejects_external_and_duplicate_file_links(self):
+        self.index("02-discovery", "../03-evidence-and-exhibits/checksums.sha256")
+        self.index("02-discovery", "_index.md")
+        result = self.run_script("audit_repo.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("outside its folder", result.stderr)
+        self.assertIn("file indexed more than once", result.stderr)
+
+    def test_synthetic_intake_can_be_hashed_and_indexed(self):
+        raw = self.root / "03-evidence-and-exhibits/raw/2025-02-03_note_delivery.txt"
+        raw.write_text("The blue widget was delivered on 2025-02-03.\n", encoding="utf-8")
+        self.index("03-evidence-and-exhibits", "raw/" + raw.name, "Ex-001")
+        timeline = self.root / "04-chronology-and-facts/master-timeline.md"
+        timeline.write_text(
+            FRONTMATTER.replace("doc_type: witness", "doc_type: timeline")
+            + "\nThe note states delivery on 2025-02-03. [Ex-001, line 1]\n",
+            encoding="utf-8",
+        )
+        self.index("04-chronology-and-facts", timeline.name, "Timeline-01")
+        result = self.run_script("hash_raw.py")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.run_script("audit_repo.py")
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_hash_append_is_idempotent_and_detects_tampering(self):
         raw = self.root / "03-evidence-and-exhibits/raw"
         manifest = self.root / "03-evidence-and-exhibits/checksums.sha256"
         first = raw / "first file.txt"
         first.write_bytes(b"first")
-        self.index("03-evidence-and-exhibits", first.name)
+        self.index("03-evidence-and-exhibits", "raw/" + first.name)
         self.assertEqual(self.run_script("audit_repo.py").returncode, 1)
         self.assertEqual(self.run_script("hash_raw.py").returncode, 0)
         original = manifest.read_bytes()
@@ -105,7 +148,7 @@ class AuditTests(unittest.TestCase):
         nested = raw / "nested/second.txt"
         nested.parent.mkdir()
         nested.write_bytes(b"second")
-        self.index("03-evidence-and-exhibits", nested.name)
+        self.index("03-evidence-and-exhibits", "raw/nested/" + nested.name)
         self.assertEqual(self.run_script("hash_raw.py").returncode, 0)
         extended = manifest.read_bytes()
         self.assertTrue(extended.startswith(original))
@@ -148,7 +191,7 @@ class AuditTests(unittest.TestCase):
             + "oid sha256:" + "a" * 64 + "\nsize 100\n",
             encoding="utf-8",
         )
-        self.index("03-evidence-and-exhibits", raw_file.name)
+        self.index("03-evidence-and-exhibits", "raw/" + raw_file.name)
         result = self.run_script("hash_raw.py")
         self.assertEqual(result.returncode, 1)
         self.assertIn("Git LFS pointer", result.stderr)

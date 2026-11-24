@@ -36,6 +36,7 @@ This framework supports civil litigation only. It is not legal advice or a subst
 - Ask whether the user has already created an empty private repository for this one matter. If not, guide them to create one, with no README, license, or initial commit. Ask for its clone URL only after the privacy gate.
 - Verify the remote target as far as available tools permit. A URL containing “private” is not proof of private visibility. If GitHub CLI is installed and authenticated, use `gh repo view OWNER/REPO --json nameWithOwner,isPrivate,url`; otherwise ask the user to confirm private visibility in GitHub's repository settings.
 - Never rename or add remotes until the user has confirmed the target. Keep the public framework URL under the remote name `framework`; use `origin` only for the private matter repository. Do not push until the user explicitly approves the exact destination shown by `git remote -v`.
+- Explain the branch protection, access, backup, and [pre-push checklist](OPERATIONS.md) requirements. Do not claim those settings are enabled without verification. If controls cannot be approved or configured, stop before adding matter information; do not change repository settings without authorization.
 
 ## Phase 2 — structured matter intake
 

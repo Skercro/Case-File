@@ -27,6 +27,11 @@ else
   exit 1
 fi
 
+if ! "${PYTHON[@]}" -c 'import sys; sys.exit(sys.version_info < (3, 9))'; then
+  echo "ERROR: Python 3.9 or newer is required." >&2
+  exit 1
+fi
+
 echo "Preparing the project virtual environment..."
 if [[ ! -x ".venv/bin/python" && ! -x ".venv/Scripts/python.exe" ]]; then
   "${PYTHON[@]}" -m venv .venv
@@ -38,6 +43,11 @@ elif [[ -x ".venv/Scripts/python.exe" ]]; then
   VENV_PYTHON=".venv/Scripts/python.exe"
 else
   echo "ERROR: virtual environment creation did not produce a usable Python interpreter." >&2
+  exit 1
+fi
+
+if ! "$VENV_PYTHON" -c 'import sys; sys.exit(sys.version_info < (3, 9))'; then
+  echo "ERROR: the existing virtual environment requires Python 3.9 or newer; recreate it with a supported interpreter." >&2
   exit 1
 fi
 

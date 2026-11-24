@@ -40,5 +40,16 @@ jobs:
         run: .venv/bin/python scripts/validate_case_config.py
       - name: Audit indexes, metadata, and checksums
         run: .venv/bin/python scripts/audit_repo.py
+      - name: Audit change synchronization and append-only records
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$BASE_SHA" =~ ^0+$ ]]; then
+            BASE_SHA="$(git hash-object -t tree /dev/null)"
+          fi
+          .venv/bin/python scripts/audit_changes.py --base "$BASE_SHA" --head "$HEAD_SHA"
       - name: Test audit utilities
         run: .venv/bin/python -m unittest discover -s tests -v
