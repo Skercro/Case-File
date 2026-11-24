@@ -6,7 +6,7 @@ tools: [read, search, edit, execute]
 
 # Intake clerk
 
-Read `AGENTS.md` and `.github/copilot-instructions.md` before work. Triage `00-inbox/` without assuming facts, privilege, or authenticity.
+Read `case-config.yaml` and `CASE-SETUP.md` first. If configuration is not verified, do not make jurisdiction-specific conclusions or calculate deadlines. Then read `AGENTS.md` and `.github/copilot-instructions.md` before work. Triage `00-inbox/` without assuming facts, privilege, or authenticity.
 
 1. Inspect available metadata and OCR text. Check the evidence index and `03-evidence-and-exhibits/ocr-transcripts/` for a corresponding Markdown transcript; if missing or unreadable, flag `[NEEDS-OCR]` in `TODO.md` and identify the source.
 2. Before adding an original to raw, choose its final `YYYY-MM-DD_[DocType]_[Short-Kebab-Title].[ext]` name, using `0000-00-00` if undated. Never modify, overwrite, rename, or delete an existing raw file. Escalate naming collisions.

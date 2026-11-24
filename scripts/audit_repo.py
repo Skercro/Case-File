@@ -24,7 +24,7 @@ REQUIRED = {"doc_type", "status", "last_updated", "updated_by", "verified_agains
 DOC_TYPES = {
     "repository_guide", "inbox_guide", "folder_index", "task_queue",
     "case_summary", "theory_of_case", "procedural_history", "audit_log",
-    "pleading_draft", "legal_memo", "exhibit_sheet", "privilege_log",
+    "pleading_draft", "legal_memo", "exhibit_sheet", "privilege_log", "authority_register",
     "timeline", "contradictions_log", "witness",
 }
 STATUSES = {"draft", "in_review", "verified", "filed", "superseded"}
