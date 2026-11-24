@@ -3,11 +3,13 @@ doc_type: repository_guide
 status: draft
 privilege: confidential
 last_updated: 2026-11-24
-updated_by: scaffold
+updated_by: framework
 verified_against_record: false
 ---
 
-# Case file dashboard
+# Case-file dashboard
+
+**New to this framework?** Start with [README.md](README.md), then follow the [case setup guide](CASE-SETUP.md) to create and check a separate private workspace before adding any matter-specific information.
 
 **Matter setup:** [Civil case configuration](case-config.yaml) · [Case setup guide](CASE-SETUP.md) · [Authority register](00-admin-and-strategy/authority-register.md)
 
