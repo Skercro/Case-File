@@ -1,0 +1,81 @@
+# Civil litigation case configuration. Complete per matter in a private repository.
+# See CASE-SETUP.md. Never put real case data in the reusable public framework.
+
+schema_version: "1.0"
+configuration_status: unconfigured # unconfigured | in_progress | verified
+
+case:
+  matter_type: civil
+  title: null
+  case_number: null
+  case_type: null # contract, tort, family, probate, landlord-tenant, etc.
+  filing_date: null
+  procedural_stage: null
+  case_status: null
+
+jurisdiction:
+  country: null
+  state_or_province: null
+  county_or_district: null
+  judicial_district: null
+  court:
+    name: null
+    level: null
+    division: null
+    branch_or_part: null
+  venue_basis: null
+  personal_jurisdiction_basis: null
+  subject_matter_jurisdiction_basis: null
+  governing_law:
+    federal: []
+    state: []
+    local_rules: []
+    standing_orders: []
+  choice_of_law_issues: []
+  jurisdictional_questions: []
+
+parties: []
+# Party entries: id, role, name, represented_by, service_status.
+# Use stable IDs (party_001). Store actual names only in the private matter repository.
+
+case_scope:
+  claims: []
+  defenses: []
+  requested_relief: []
+  counterclaims: []
+  related_proceedings: []
+
+proceedings:
+  pending_motions: []
+  hearings: []
+  known_deadlines: []
+  orders: []
+  alternative_dispute_resolution:
+    status: unknown
+    method: null
+    scheduled_events: []
+
+authority_research:
+  primary_sources_to_consult: []
+  official_court_sources: []
+  research_notes: "Candidate sources are research leads, not findings that a rule or authority controls."
+
+operating_controls:
+  confidentiality_level: confidential
+  privilege_review_required: true
+  human_review_required: true
+  filing_approval_required: true
+  deadline_calculation_requires_human_verification: true
+  permitted_ai_data_sources: []
+  prohibited_ai_actions:
+    - "Do not file or serve documents."
+    - "Do not contact parties, counsel, witnesses, or the court."
+    - "Do not make legal or procedural decisions on behalf of a party."
+    - "Do not treat unverified allegations or candidate authorities as established facts or law."
+
+verification:
+  status: not_reviewed # not_reviewed | in_review | verified
+  last_reviewed: null
+  reviewed_by: null
+  unresolved_items: []
+  notes: "Verified status is a human attestation; automated validation checks structure only."
