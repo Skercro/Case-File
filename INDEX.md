@@ -9,9 +9,9 @@ verified_against_record: false
 
 # Case-file dashboard
 
-**New to this framework?** Start with [README.md](README.md), then follow the [case setup guide](CASE-SETUP.md) to create and check a separate private workspace before adding any matter-specific information.
+**New to this framework?** Start with [README.md](README.md), then use the [case-setup agent](.github/agents/case-setup.agent.md) for guided setup. Its operating instructions are in [SETUP-AGENT.md](SETUP-AGENT.md). If you prefer manual setup, use [CASE-SETUP.md](CASE-SETUP.md).
 
-**Matter setup:** [Civil case configuration](case-config.yaml) · [Case setup guide](CASE-SETUP.md) · [Authority register](00-admin-and-strategy/authority-register.md)
+**Matter setup:** [Civil case configuration](case-config.yaml) · [Setup agent instructions](SETUP-AGENT.md) · [Manual setup guide](CASE-SETUP.md) · [Authority register](00-admin-and-strategy/authority-register.md)
 
 | Area | Contents | Status |
 | --- | --- | --- |
