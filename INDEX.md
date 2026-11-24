@@ -9,6 +9,8 @@ verified_against_record: false
 
 # Case file dashboard
 
+**Matter setup:** [Civil case configuration](case-config.yaml) · [Case setup guide](CASE-SETUP.md) · [Authority register](00-admin-and-strategy/authority-register.md)
+
 | Area | Contents | Status |
 | --- | --- | --- |
 | [Inbox](00-inbox/README.md) | Incoming staging and intake instructions. | Awaiting intake |

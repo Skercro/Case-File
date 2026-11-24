@@ -13,15 +13,16 @@ A jurisdiction-agnostic scaffold for organizing a litigation record with human s
 
 ## Architecture
 
-Start with [INDEX.md](INDEX.md) for the repository map, [TODO.md](TODO.md) for deadlines and work, and [AGENTS.md](AGENTS.md) for the mandatory agent rules. Numbered folders separate filings, discovery, immutable source evidence, factual analysis, and correspondence. Each numbered folder has its own `_index.md`; evidence transcripts are working derivatives, not replacements for originals.
+Start with [INDEX.md](INDEX.md) for the repository map, [CASE-SETUP.md](CASE-SETUP.md) and [case-config.yaml](case-config.yaml) for civil case initialization, [TODO.md](TODO.md) for deadlines and work, and [AGENTS.md](AGENTS.md) for the mandatory agent rules. Numbered folders separate filings, discovery, immutable source evidence, factual analysis, and correspondence. Each numbered folder has its own `_index.md`; evidence transcripts are working derivatives, not replacements for originals.
 
 ## Quick start
 
-1. Restrict repository access and confirm that the hosting, retention, confidentiality, privilege, and AI-processing policies are appropriate for the matter. Do not put secrets in the repository. Treat attorney review as mandatory.
-2. Install Git LFS and enable it locally: `git lfs install`. The included `.gitattributes` tracks the listed lowercase binary extensions; use lowercase extensions when naming records. Install LFS before adding those files; existing tracked files need a separately reviewed migration. LFS storage and bandwidth may incur costs.
-3. Place incoming material in [00-inbox/](00-inbox/README.md), then ask `@intake-clerk` to triage it. Choose the final raw evidence name before placing a copy in `03-evidence-and-exhibits/raw/`; never change an existing raw file.
-4. Run `python3 scripts/hash_raw.py`, update relevant folder indexes and the audit log, and run `python3 scripts/audit_repo.py`. Review the changes in a pull request. CI checks the raw evidence diff and audits the checked-out record.
-5. Dispatch chronology, discovery, research, and record-audit work using the agent routing table in [AGENTS.md](AGENTS.md) or the issue forms. A qualified human verifies citations, dates, authorities, privilege decisions, and deadlines.
+1. Create a separate private repository for each matter from this clean framework. Complete [case-config.yaml](case-config.yaml) using [CASE-SETUP.md](CASE-SETUP.md). Keep actual party names, case numbers, and evidence out of the reusable framework.
+2. Restrict repository access and confirm that the hosting, retention, confidentiality, privilege, and AI-processing policies are appropriate for the matter. Do not put secrets in the repository. Treat attorney review as mandatory.
+3. Install Git LFS and enable it locally: `git lfs install`. The included `.gitattributes` tracks the listed lowercase binary extensions; use lowercase extensions when naming records. Install LFS before adding those files; existing tracked files need a separately reviewed migration. LFS storage and bandwidth may incur costs.
+4. Place incoming material in [00-inbox/](00-inbox/README.md), then ask `@intake-clerk` to triage it. Choose the final raw evidence name before placing a copy in `03-evidence-and-exhibits/raw/`; never change an existing raw file.
+5. Run `python3 scripts/hash_raw.py`, update relevant folder indexes and the audit log, and run `python3 scripts/audit_repo.py`. Review the changes in a pull request. CI checks the raw evidence diff and audits the checked-out record.
+6. Dispatch chronology, discovery, research, and record-audit work using the agent routing table in [AGENTS.md](AGENTS.md) or the issue forms. A qualified human verifies citations, dates, authorities, privilege decisions, and deadlines.
 
 ## Integrity and limitations
 

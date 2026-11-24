@@ -11,6 +11,10 @@ verified_against_record: false
 
 All agents must read [.github/copilot-instructions.md](.github/copilot-instructions.md) before executing tasks. Follow applicable professional duties, confidentiality rules, repository access controls, and human counsel instructions. Escalate uncertainty; never invent jurisdiction-specific rules or deadlines.
 
+## 0. Case identity, jurisdiction, and setup
+
+For every matter-specific task, read `case-config.yaml` and `CASE-SETUP.md` before analyzing the record. Treat `case-config.yaml` as the authoritative structured source for case identity, civil case type, jurisdiction, court, parties, procedural posture, and operating constraints. Do not infer missing values from filenames, memory, location, or surrounding context. If `configuration_status` is `unconfigured` or `in_progress`, identify missing setup fields and limit work to intake, organization, and clearly labeled preliminary analysis. Do not make jurisdiction-specific legal conclusions, calculate deadlines, or draft filing-ready documents until the relevant jurisdiction and court are verified by a human. A configuration marked `verified` is a human assertion, not an automated legal finding. Record candidate and verified authorities in `00-admin-and-strategy/authority-register.md`.
+
 ## 1. Evidentiary chain of custody and immutability
 
 Absolutely never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`, including the placeholder. Choose the final name before placing a new original there; keep corrections, annotations, and OCR as separately identified derivatives outside `raw/`. For each new raw file run `python3 scripts/hash_raw.py`, retain existing checksum entries, and record provenance and custody details in the evidence index. If a file or hash is wrong, stop and escalate to human counsel; do not silently repair it. The checksum proves content consistency, not authenticity.

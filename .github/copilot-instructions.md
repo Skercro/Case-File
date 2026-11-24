@@ -1,6 +1,6 @@
 # Universal repository standards
 
-Read [AGENTS.md](../AGENTS.md) first. Preserve confidentiality and privilege; use only authorized sources and tools. These instructions do not replace qualified human legal judgment.
+Read [AGENTS.md](../AGENTS.md) first. For every matter-specific task, also read [case-config.yaml](../case-config.yaml), [CASE-SETUP.md](../CASE-SETUP.md), and the authority register. This framework currently supports civil litigation only. Do not assume a jurisdiction or court rule. If configuration is not verified, do not state jurisdiction-specific conclusions or calculate legal deadlines. Preserve confidentiality and privilege; use only authorized sources and tools. These instructions do not replace qualified human legal judgment.
 
 ## Naming
 
@@ -12,7 +12,7 @@ The required keys are `doc_type`, `status`, `last_updated`, `updated_by`, and `v
 
 | Key | Allowed values / format |
 | --- | --- |
-| `doc_type` | `repository_guide`, `inbox_guide`, `folder_index`, `task_queue`, `case_summary`, `theory_of_case`, `procedural_history`, `audit_log`, `pleading_draft`, `legal_memo`, `exhibit_sheet`, `privilege_log`, `timeline`, `contradictions_log`, `witness` |
+| `doc_type` | `repository_guide`, `inbox_guide`, `folder_index`, `task_queue`, `case_summary`, `theory_of_case`, `procedural_history`, `audit_log`, `authority_register`, `pleading_draft`, `legal_memo`, `exhibit_sheet`, `privilege_log`, `timeline`, `contradictions_log`, `witness` |
 | `status` | `draft`, `in_review`, `verified`, `filed`, `superseded` |
 | `privilege` | `none`, `attorney_client`, `work_product`, `confidential` |
 | `last_updated` | Valid calendar date `YYYY-MM-DD` |

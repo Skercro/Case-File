@@ -34,6 +34,10 @@ jobs:
             git diff --no-renames --name-status --diff-filter=DMRT "$BASE_SHA" "$HEAD_SHA" -- 03-evidence-and-exhibits/raw/
             exit 1
           fi
+      - name: Install audit dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Validate civil case configuration
+        run: python3 scripts/validate_case_config.py
       - name: Audit indexes, metadata, and checksums
         run: python3 scripts/audit_repo.py
       - name: Test audit utilities
