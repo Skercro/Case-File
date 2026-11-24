@@ -2,47 +2,65 @@
 # See CASE-SETUP.md. Never put real case data in the reusable public framework.
 
 schema_version: "1.0"
-configuration_status: unconfigured # unconfigured | in_progress | verified
+configuration_status: in_progress # unconfigured | in_progress | verified
 
 case:
   matter_type: civil
-  title: null
-  case_number: null
-  case_type: null # contract, tort, family, probate, landlord-tenant, etc.
-  filing_date: null
-  procedural_stage: null
-  case_status: null
+  title: Huckabee v. Hylton
+  case_number: JS-13467
+  case_type: family # contract, tort, family, probate, landlord-tenant, etc.
+  filing_date: 2026-08-07
+  procedural_stage: "Discovery is complete, and the parties are waiting for mediation set for 2027-01-15"
+  case_status: active
 
 jurisdiction:
-  country: null
-  state_or_province: null
-  county_or_district: null
+  country: USA
+  state_or_province: Tennessee
+  county_or_district: Rutherford
   judicial_district: null
   court:
-    name: null
+    name: Rutherford County Juvenile Court of Murfreesboro
     level: null
     division: null
     branch_or_part: null
   venue_basis: null
   personal_jurisdiction_basis: null
-  subject_matter_jurisdiction_basis: null
+  subject_matter_jurisdiction_basis: "User-stated basis: prior 2022 PPP filed in this court and continuing jurisdiction [UNVERIFIED]"
   governing_law:
     federal: []
     state: []
     local_rules: []
     standing_orders: []
   choice_of_law_issues: []
-  jurisdictional_questions: []
+  jurisdictional_questions:
+    - "Specific venue basis not yet documented [UNVERIFIED]"
+    - "Personal-jurisdiction basis not yet documented [UNVERIFIED]"
+    - "Subject-matter-jurisdiction basis requires authoritative source confirmation [UNVERIFIED]"
 
-parties: []
+parties:
+  - id: party_001
+    role: petitioner
+    name: Sterling Huckabee
+    represented_by: Derek Howard (Boro Law Group)
+    service_status: served
+  - id: party_002
+    role: respondent
+    name: Brian Hylton
+    represented_by: pro se
+    service_status: served
 # Party entries: id, role, name, represented_by, service_status.
 # Use stable IDs (party_001). Store actual names only in the private matter repository.
 
 case_scope:
-  claims: []
-  defenses: []
-  requested_relief: []
-  counterclaims: []
+  claims:
+    - "[ALLEGED - User intake] Petitioner seeks adoption of the parenting schedule the parties have been exercising, which is stated to deviate from the PPP."
+  defenses:
+    - "[ALLEGED - User intake] Petitioner position: children have become accustomed to the new schedule."
+    - "[ALLEGED - User intake] Respondent position: he has maintained a long-standing stable location for school."
+  requested_relief:
+    - "[ALLEGED - User intake] Petitioner seeks adoption of the schedule as exercised."
+  counterclaims:
+    - "[ALLEGED - User intake] Respondent seeks schedule modifications reflecting the parent with the most demonstrable stability; additional modifications TBD after mediation."
   related_proceedings: []
 
 proceedings:
@@ -51,12 +69,18 @@ proceedings:
   known_deadlines: []
   orders: []
   alternative_dispute_resolution:
-    status: unknown
+    status: scheduled
     method: null
-    scheduled_events: []
+    scheduled_events:
+      - type: mediation
+        date: 2027-01-15
+        source: "User intake statement [UNVERIFIED]"
+        trigger: null
+        human_verified: false
 
 authority_research:
-  primary_sources_to_consult: []
+  primary_sources_to_consult:
+    - "Rutherford County Juvenile Court rules page (URL pending from human reviewer)"
   official_court_sources: []
   research_notes: "Candidate sources are research leads, not findings that a rule or authority controls."
 
@@ -76,6 +100,10 @@ operating_controls:
 verification:
   status: not_reviewed # not_reviewed | in_review | verified
   last_reviewed: null
-  reviewed_by: null
-  unresolved_items: []
-  notes: "Verified status is a human attestation; automated validation checks structure only."
+  reviewed_by: Brian Hylton
+  unresolved_items:
+    - "Obtain and record official court/jurisdiction source documents."
+    - "Confirm venue, personal jurisdiction, and subject-matter jurisdiction bases from authoritative records."
+    - "Document trigger/source details for all deadlines and procedural events."
+    - "Confirm permitted AI data-source/tool restrictions for this matter."
+  notes: "Verified status is a human attestation; automated validation checks structure only. Intake values remain unverified pending human review."

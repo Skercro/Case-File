@@ -13,7 +13,7 @@ An entry is a research lead until its text, currency, jurisdiction, applicabilit
 
 | Authority ID | Citation / title | Type | Jurisdiction / court | Official source | Effective / decision date | Current text checked | Applicability / holding | Treatment | Verified by / date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| AUTH-001 | [Add source] | Statute / rule / case / order | [Court / jurisdiction] | [Official URL or source ID] | [Date] | No | [Source-supported note] | Candidate | [Reviewer / date] |
+| AUTH-001 | Rutherford County Juvenile Court local rules (title to confirm) | Court rules | Rutherford County Juvenile Court of Murfreesboro, Tennessee | Candidate lead from user intake; official URL pending | Unknown | No | Candidate source for local procedural rules; applicability unverified | Candidate | Brian Hylton / pending |
 
 ## Verification checklist
 
