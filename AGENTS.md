@@ -17,7 +17,7 @@ For every matter-specific task, read `case-config.yaml` and `CASE-SETUP.md` befo
 
 ## 1. Evidentiary chain of custody and immutability
 
-Absolutely never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`, including the placeholder. Choose the final name before placing a new original there; keep corrections, annotations, and OCR as separately identified derivatives outside `raw/`. For each new raw file run `python3 scripts/hash_raw.py`, retain existing checksum entries, and record provenance and custody details in the evidence index. If a file or hash is wrong, stop and escalate to human counsel; do not silently repair it. The checksum proves content consistency, not authenticity.
+Absolutely never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`, including the placeholder. Choose the final name before placing a new original there; keep corrections, annotations, and OCR as separately identified derivatives outside `raw/`. For each new raw file run `.venv/bin/python scripts/hash_raw.py`, retain existing checksum entries, and record provenance and custody details in the evidence index. If a file or hash is wrong, stop and escalate to human counsel; do not silently repair it. The checksum proves content consistency, not authenticity.
 
 ## 2. Zero hallucination and strict citation
 
@@ -25,7 +25,7 @@ Every factual assertion, date, quotation, or procedural claim in summaries, time
 
 ## 3. Mandatory index and audit synchronization
 
-Whenever a file in `01` through `05` is created, moved, or updated, update that folder's `_index.md` and append a timestamped entry to [agent-audit-log.md](00-admin-and-strategy/agent-audit-log.md) in the same pull request. Index each non-`.gitkeep` file, including the index itself, in a table whose first two columns are `Record ID` and `File`. Link text must be the exact filename and the target a relative path from the index to that file within the same folder; percent-encode special characters such as spaces, parentheses, `#`, and `?` in targets. IDs must be unique across all numbered-folder indexes (case-insensitive) and stable; retain provenance and make obsolete references explicit. Run `python3 scripts/audit_repo.py` and report failures rather than hiding them. CI also compares the change against its Git base; see [OPERATIONS.md](OPERATIONS.md).
+Whenever a file in `01` through `05` is created, moved, or updated, update that folder's `_index.md` and append a timestamped entry to [agent-audit-log.md](00-admin-and-strategy/agent-audit-log.md) in the same pull request. Index each non-`.gitkeep` file, including the index itself, in a table whose first two columns are `Record ID` and `File`. Link text must be the exact filename and the target a relative path from the index to that file within the same folder; percent-encode special characters such as spaces, parentheses, `#`, and `?` in targets. IDs must be unique across all numbered-folder indexes (case-insensitive) and stable; retain provenance and make obsolete references explicit. Run `.venv/bin/python scripts/audit_repo.py` and report failures rather than hiding them. CI also compares the change against its Git base; see [OPERATIONS.md](OPERATIONS.md).
 
 ## 4. Context window hygiene
 

@@ -52,7 +52,7 @@ If the agent is unavailable, follow [CASE-SETUP.md](CASE-SETUP.md) for manual se
 
 ## Integrity, limits, and maintenance
 
-Checksums establish file-content consistency, not provenance or authenticity. Never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`; choose a final filename before placing an original there. Run `python3 scripts/hash_raw.py` after adding raw evidence, preserve prior checksum entries, and update the applicable index and audit log. See [AGENTS.md](AGENTS.md) for the complete integrity and citation rules.
+Checksums establish file-content consistency, not provenance or authenticity. Never modify, overwrite, rename, or delete an existing file in `03-evidence-and-exhibits/raw/`; choose a final filename before placing an original there. Run `.venv/bin/python scripts/hash_raw.py` after adding raw evidence, preserve prior checksum entries, and update the applicable index and audit log. See [AGENTS.md](AGENTS.md) for the complete integrity and citation rules.
 
 The framework currently supports civil litigation only. The validator checks configuration structure, not the truth of case details, legal jurisdiction, applicable law, service, deadlines, or court procedure. A human must verify those matters. See [SETUP-AGENT.md](SETUP-AGENT.md) for the agent workflow and [CASE-SETUP.md](CASE-SETUP.md) for manual setup.
 
